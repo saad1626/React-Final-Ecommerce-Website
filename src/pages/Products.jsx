@@ -1,6 +1,7 @@
 import { useState, useMemo, useContext } from "react";
 import useFetch from "../hooks/useFetch";
 import { CartContext } from "../context/CartContext";
+import { ProductsContext } from "../context/ProductsContext";
 import ProductList from "../components/ProductList";
 import SearchBar from "../components/SearchBar";
 import CategoryFilter from "../components/CategoryFilter";
@@ -10,10 +11,14 @@ import ErrorMessage from "../components/ErrorMessage";
 export default function Products() {
   const { data, loading, error } = useFetch("https://dummyjson.com/products?limit=100");
   const { addToCart } = useContext(CartContext);
+  const { customProducts } = useContext(ProductsContext);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
 
-  const products = data ? data.products : [];
+  const apiProducts = useMemo(() => (data ? data.products : []), [data]);
+
+  // admin-added products first, then the API products
+  const products = useMemo(() => [...customProducts, ...apiProducts], [customProducts, apiProducts]);
 
   const categories = useMemo(() => [...new Set(products.map((p) => p.category))], [products]);
 
@@ -40,7 +45,7 @@ export default function Products() {
 
       {loading && <Loading text="Loading products..." />}
       {error && <ErrorMessage message="Failed to load products." />}
-      {data && <ProductList products={filtered} onAdd={addToCart} />}
+      {!loading && <ProductList products={filtered} onAdd={addToCart} />}
     </div>
   );
 }

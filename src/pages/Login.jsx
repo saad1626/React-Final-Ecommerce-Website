@@ -43,7 +43,7 @@ export default function Login() {
         <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Password" className={inputClass} />
         <Button type="submit" className="w-full">Login</Button>
       </form>
-      <p className="text-sm text-gray-500 mt-3">Demo: admin@example.com / admin123</p>
+      {/* <p className="text-sm text-gray-500 mt-3">Demo: admin@example.com / admin123</p> */}
     </Card>
   );
 }

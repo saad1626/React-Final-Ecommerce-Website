@@ -1,16 +1,19 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
+import { OrdersContext } from "../../context/OrdersContext";
 import Card from "../../components/Card";
 import Loading from "../../components/Loading";
-import { mockOrders, mockUsers, formatPrice } from "../../utils/helpers";
+import { mockUsers, formatPrice } from "../../utils/helpers";
 
 export default function Dashboard() {
+  const { orders } = useContext(OrdersContext);
   const { data, loading, error } = useFetch("https://dummyjson.com/products?limit=5&select=title,price");
-  const revenue = mockOrders.filter((o) => o.status === "Completed").reduce((s, o) => s + o.total, 0);
+  const revenue = orders.filter((o) => o.status === "Completed").reduce((s, o) => s + o.total, 0);
 
   const stats = [
     { label: "Total Products", value: 100 },
-    { label: "Total Orders", value: mockOrders.length },
+    { label: "Total Orders", value: orders.length },
     { label: "Total Users", value: mockUsers.length },
     { label: "Total Revenue", value: formatPrice(revenue) },
   ];
@@ -29,12 +32,16 @@ export default function Dashboard() {
       <div className="grid md:grid-cols-2 gap-4">
         <Card>
           <h3 className="font-bold mb-2">Recent Orders</h3>
-          {mockOrders.slice(0, 4).map((o) => (
-            <p key={o.id} className="flex justify-between border-b py-1 text-sm">
-              <span>{o.id} - {o.customer}</span>
-              <span>{o.status}</span>
-            </p>
-          ))}
+          {orders.length === 0 ? (
+            <p className="text-sm text-gray-500">No orders yet.</p>
+          ) : (
+            orders.slice(0, 4).map((o) => (
+              <p key={o.id} className="flex justify-between border-b py-1 text-sm">
+                <span>{o.id} - {o.customer}</span>
+                <span>{o.status}</span>
+              </p>
+            ))
+          )}
         </Card>
 
         <Card>

@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { useContext } from "react";
 import useFetch from "../hooks/useFetch";
 import { CartContext } from "../context/CartContext";
+import { ProductsContext } from "../context/ProductsContext";
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage";
 import Button from "../components/Button";
@@ -11,10 +12,17 @@ import { formatPrice } from "../utils/helpers";
 export default function ProductDetails() {
   const { id } = useParams();
   const { addToCart } = useContext(CartContext);
-  const { data: p, loading, error } = useFetch(`https://dummyjson.com/products/${id}`);
+  const { customProducts } = useContext(ProductsContext);
 
-  if (loading) return <Loading text="Loading product..." />;
-  if (error) return <ErrorMessage />;
+  // Is this one of the admin's products? If so, skip the API call (null url = no fetch)
+  const customProduct = customProducts.find((c) => String(c.id) === id);
+  const { data, loading, error } = useFetch(
+    customProduct ? null : `https://dummyjson.com/products/${id}`
+  );
+  const p = customProduct || data;
+
+  if (!customProduct && loading) return <Loading text="Loading product..." />;
+  if (!p || error) return <ErrorMessage />;
 
   return (
     <div>
