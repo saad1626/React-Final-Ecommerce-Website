@@ -1,25 +1,42 @@
 import { useState, useMemo, useCallback } from "react";
-import { mockUsers } from "../../utils/helpers";
+import useFetch from "../../hooks/useFetch";
 import UserRow from "./UserRow";
+import Loading from "../../components/Loading";
+import ErrorMessage from "../../components/ErrorMessage";
 import EmptyState from "../../components/EmptyState";
 
 export default function Users() {
-  const [users, setUsers] = useState(mockUsers);
-  const [search, setSearch] = useState("");
-
-  const filtered = useMemo(
-    () =>
-      users.filter(
-        (u) =>
-          u.name.toLowerCase().includes(search.toLowerCase()) ||
-          u.email.toLowerCase().includes(search.toLowerCase())
-      ),
-    [users, search]
+  // select= asks the API for only the fields we need
+  const { data, loading, error } = useFetch(
+    "https://dummyjson.com/users?limit=30&select=firstName,lastName,email,role,image"
   );
+  const [search, setSearch] = useState("");
+  const [deletedIds, setDeletedIds] = useState([]); // delete is simulated on the screen only
+
+  // turn API users into the shape our table uses, hiding deleted ones
+  const users = useMemo(() => {
+    if (!data) return [];
+    return data.users
+      .filter((u) => !deletedIds.includes(u.id))
+      .map((u) => ({
+        id: u.id,
+        name: `${u.firstName} ${u.lastName}`,
+        email: u.email,
+        role: u.role,
+        image: u.image,
+      }));
+  }, [data, deletedIds]);
+
+  const filtered = useMemo(() => {
+    const text = search.toLowerCase();
+    return users.filter(
+      (u) => u.name.toLowerCase().includes(text) || u.email.toLowerCase().includes(text)
+    );
+  }, [users, search]);
 
   // useCallback so memoized UserRow doesn't re-render when typing in the search box
   const deleteUser = useCallback((id) => {
-    setUsers((prev) => prev.filter((u) => u.id !== id));
+    setDeletedIds((prev) => [...prev, id]);
   }, []);
 
   return (
@@ -29,30 +46,34 @@ export default function Users() {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Search users..."
-        className="border p-2 rounded w-full sm:w-72 mb-4 bg-white dark:bg-gray-800"
+        className="input sm:w-72 mb-4"
       />
-      {filtered.length === 0 ? (
-        <EmptyState message="No users found." />
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left bg-white dark:bg-gray-800 border">
-            <thead className="bg-gray-200 dark:bg-gray-700">
-              <tr>
-                <th className="p-2">Name</th>
-                <th className="p-2">Email</th>
-                <th className="p-2">Role</th>
-                <th className="p-2">Status</th>
-                <th className="p-2">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((u) => (
-                <UserRow key={u.id} user={u} onDelete={deleteUser} />
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+
+      {loading && <Loading text="Loading users..." />}
+      {error && <ErrorMessage message="Failed to load users." />}
+
+      {data &&
+        (filtered.length === 0 ? (
+          <EmptyState message="No users found." />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm">
+              <thead className="bg-gray-100 dark:bg-gray-700 text-sm uppercase text-gray-600 dark:text-gray-300">
+                <tr>
+                  <th className="p-2">Name</th>
+                  <th className="p-2">Email</th>
+                  <th className="p-2">Role</th>
+                  <th className="p-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((u) => (
+                  <UserRow key={u.id} user={u} onDelete={deleteUser} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ))}
     </div>
   );
 }
