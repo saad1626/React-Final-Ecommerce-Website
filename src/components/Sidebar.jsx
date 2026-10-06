@@ -1,17 +1,17 @@
 import { NavLink } from "react-router-dom";
 
 const links = [
-  { to: "/dashboard", label: "Overview", end: true },
-  { to: "/dashboard/products", label: "Products" },
-  { to: "/dashboard/orders", label: "Orders" },
-  { to: "/dashboard/users", label: "Users" },
-  { to: "/dashboard/profile", label: "Profile" },
-  { to: "/dashboard/settings", label: "Settings" },
+  { to: "/admin/dashboard", label: "Overview", end: true },
+  { to: "/admin/dashboard/products", label: "Products" },
+  { to: "/admin/dashboard/orders", label: "Orders" },
+  { to: "/admin/dashboard/users", label: "Users" },
+  { to: "/admin/dashboard/profile", label: "Profile" },
+  { to: "/admin/dashboard/settings", label: "Settings" },
 ];
 
 export default function Sidebar({ onNavigate }) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-1">
       {links.map((l) => (
         <NavLink
           key={l.to}
@@ -19,7 +19,9 @@ export default function Sidebar({ onNavigate }) {
           end={l.end}
           onClick={onNavigate}
           className={({ isActive }) =>
-            `p-2 rounded ${isActive ? "bg-blue-600 text-white" : "hover:bg-gray-200 dark:hover:bg-gray-700"}`
+            `px-3 py-2 rounded-md transition-colors ${
+              isActive ? "bg-blue-600 text-white" : "hover:bg-gray-100 dark:hover:bg-gray-700"
+            }`
           }
         >
           {l.label}

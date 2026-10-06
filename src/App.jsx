@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import PublicLayout from "./components/PublicLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
@@ -31,9 +31,12 @@ export default function App() {
         <Route path="login" element={<Login />} />
       </Route>
 
+      {/* /admin on its own goes to the dashboard */}
+      <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+
       {/* Admin area (nested + protected) */}
       <Route
-        path="/dashboard"
+        path="/admin/dashboard"
         element={
           <ProtectedRoute>
             <DashboardLayout />

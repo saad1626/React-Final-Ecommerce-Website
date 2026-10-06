@@ -1,6 +1,6 @@
 export default function Button({ children, onClick, type = "button", variant = "primary", className = "" }) {
   const styles = {
-    primary: "bg-blue-600 text-white hover:bg-blue-700",
+    primary: "bg-purple-600 text-white hover:bg-blue-700",
     danger: "bg-red-600 text-white hover:bg-red-700",
     outline: "border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700",
   };

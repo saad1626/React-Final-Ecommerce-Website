@@ -41,7 +41,7 @@ export default function Login() {
       return;
     }
     if (login(form.email, form.password)) {
-      navigate("/dashboard");
+      navigate("/admin/dashboard");
     } else {
       setError("Invalid email or password");
     }

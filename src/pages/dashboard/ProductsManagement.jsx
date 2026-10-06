@@ -131,15 +131,28 @@ export default function ProductsManagement() {
         <AddProductForm categories={categories} onSubmit={handleAdd} />
       </Modal>
 
-      <Modal open={!!editing} onClose={() => setEditing(null)} title="Edit Product">
-        <form onSubmit={handleSave} className="space-y-3">
-          {formError && <p className="text-red-600 text-sm">{formError}</p>}
-          <input name="title" value={form.title} onChange={handleChange} placeholder="Title" className="input" />
-          <input name="price" type="number" value={form.price} onChange={handleChange} placeholder="Price" className="input" />
-          <input name="stock" type="number" value={form.stock} onChange={handleChange} placeholder="Stock" className="input" />
-          <Button type="submit">Save</Button>
-        </form>
-      </Modal>
+   <Modal open={!!editing} onClose={() => setEditing(null)} title="Edit Product">
+  <form onSubmit={handleSave} className="space-y-3">
+    {formError && <p className="text-red-600 text-sm">{formError}</p>}
+
+    <div>
+      <label htmlFor="edit-title" className="block text-sm font-medium mb-1">Title</label>
+      <input id="edit-title" name="title" value={form.title} onChange={handleChange} placeholder="Title" className="input" />
+    </div>
+
+    <div>
+      <label htmlFor="edit-price" className="block text-sm font-medium mb-1">Price ($)</label>
+      <input id="edit-price" name="price" type="number" step="0.01" value={form.price} onChange={handleChange} placeholder="Price" className="input" />
+    </div>
+
+    <div>
+      <label htmlFor="edit-stock" className="block text-sm font-medium mb-1">Stock</label>
+      <input id="edit-stock" name="stock" type="number" value={form.stock} onChange={handleChange} placeholder="Stock" className="input" />
+    </div>
+
+    <Button type="submit">Save</Button>
+  </form>
+</Modal>
     </div>
   );
 }

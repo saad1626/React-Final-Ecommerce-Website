@@ -83,10 +83,10 @@ export default function Dashboard() {
       <Card>
         <h3 className="font-bold mb-2">Quick Actions</h3>
         <div className="flex flex-wrap gap-3 text-blue-600 underline">
-          <Link to="/dashboard/products">Manage Products</Link>
-          <Link to="/dashboard/orders">View Orders</Link>
-          <Link to="/dashboard/users">View Users</Link>
-          <Link to="/dashboard/settings">Settings</Link>
+ <Link to="/admin/dashboard/products">Manage Products</Link>
+<Link to="/admin/dashboard/orders">View Orders</Link>
+<Link to="/admin/dashboard/users">View Users</Link>
+<Link to="/admin/dashboard/settings">Settings</Link>
         </div>
       </Card>
     </div>
