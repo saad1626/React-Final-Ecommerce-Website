@@ -40,9 +40,6 @@ export default function Footer() {
         </div>
       </div>
 
-      <p className="text-center text-xs text-gray-500 border-t border-gray-800 py-3">
-        Made with ❤️ © 2026 MyShop – React Final Project
-      </p>
     </footer>
   );
 }
